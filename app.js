@@ -146,6 +146,83 @@
     renderHistory();
   });
 
+  // 올해 당첨번호 (Vercel 함수 -> 실패 시 저장된 JSON)
+  let winData = [];
+  let winShown = 10;
+
+  async function loadWinning() {
+    const sources = ["/api/lotto", "winning-2026.json"];
+    for (const url of sources) {
+      try {
+        const r = await fetch(url);
+        if (!r.ok) continue;
+        const data = await r.json();
+        if (Array.isArray(data) && data.length) return data;
+      } catch {}
+    }
+    return [];
+  }
+
+  function renderWinning() {
+    if (!winData.length) {
+      $("winLoading").textContent = "당첨번호를 불러오지 못했어요.";
+      return;
+    }
+    $("winLoading").hidden = true;
+    $("winBody").hidden = false;
+    const year = winData[0].date.slice(0, 4);
+    $("winTitle").textContent = `${year}년 당첨번호`;
+    $("winMeta").textContent = `${winData[winData.length - 1].round}~${winData[0].round}회 · ${winData.length}회차`;
+
+    // 출현 횟수 (보너스 제외)
+    const count = new Array(MAX + 1).fill(0);
+    winData.forEach((d) => d.numbers.forEach((n) => count[n]++));
+    const top = Array.from({ length: MAX }, (_, i) => i + 1)
+      .sort((a, b) => count[b] - count[a] || a - b)
+      .slice(0, 10);
+    const hot = $("hot");
+    hot.innerHTML = "";
+    top.forEach((n) => {
+      const item = document.createElement("div");
+      item.className = "item";
+      item.appendChild(ballEl(n, true));
+      item.append(`${count[n]}회`);
+      hot.appendChild(item);
+    });
+
+    const ol = $("winList");
+    ol.innerHTML = "";
+    winData.slice(0, winShown).forEach((d) => {
+      const li = document.createElement("li");
+      const rd = document.createElement("span");
+      rd.className = "rd";
+      rd.innerHTML = `<b>${d.round}회</b><br>${d.date.slice(5).replace("-", ".")}`;
+      li.appendChild(rd);
+      d.numbers.forEach((n) => li.appendChild(ballEl(n, true)));
+      const plus = document.createElement("span");
+      plus.className = "plus";
+      plus.textContent = "+";
+      li.append(plus, ballEl(d.bonus, true));
+      ol.appendChild(li);
+    });
+    $("winMore").hidden = winShown >= winData.length;
+  }
+
+  // 추천 번호 중 직전 회차 당첨번호와 겹치는 번호 표시
+  function markHits() {
+    if (!winData.length) return;
+    const last = new Set(winData[0].numbers);
+    document.querySelectorAll(".game .ball").forEach((b) => {
+      const hit = last.has(Number(b.textContent));
+      b.classList.toggle("hit", hit);
+      b.title = hit ? `${winData[0].round}회 당첨번호` : "";
+    });
+  }
+
+  $("winMore").addEventListener("click", () => { winShown = winData.length; renderWinning(); });
+  $("generate").addEventListener("click", markHits);
+
   renderPicker();
   renderHistory();
+  loadWinning().then((d) => { winData = d; renderWinning(); });
 })();

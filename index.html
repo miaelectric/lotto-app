@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>로또 번호 자동 추천</title>
+  <title>고정우가 좋아하는 로또 번호 자동 추천</title>
   <meta name="description" content="로또 6/45 번호를 자동으로 추천해 주는 웹 앱" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎱</text></svg>" />
   <link rel="stylesheet" href="style.css" />
@@ -11,7 +11,8 @@
 <body>
   <main class="wrap">
     <header>
-      <h1>🎱 로또 번호 자동 추천</h1>
+      <img class="avatar" src="profile.jpg" alt="고정우 그림" width="96" height="128" onerror="this.remove()" />
+      <h1>🎱 고정우가 좋아하는<br>로또 번호 자동 추천</h1>
       <p class="sub">1~45 중 6개 번호를 골라 드려요. 고정수·제외수를 지정할 수 있어요.</p>
     </header>
 
@@ -35,6 +36,21 @@
     </section>
 
     <section id="results" class="results" aria-live="polite"></section>
+
+    <section class="card" id="winCard">
+      <div class="row between">
+        <h2 id="winTitle">올해 당첨번호</h2>
+        <span id="winMeta" class="meta"></span>
+      </div>
+      <div id="winLoading" class="hint">당첨번호를 불러오는 중이에요…</div>
+      <div id="winBody" hidden>
+        <h3>자주 나온 번호 TOP 10</h3>
+        <div id="hot" class="hot"></div>
+        <h3>회차별 당첨번호</h3>
+        <ol id="winList" class="winlist"></ol>
+        <button id="winMore" class="ghost more" type="button">더 보기</button>
+      </div>
+    </section>
 
     <section class="card" id="historyCard" hidden>
       <div class="row between">
