@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>로또 번호 자동 추천</title>
+  <meta name="description" content="로또 6/45 번호를 자동으로 추천해 주는 웹 앱" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎱</text></svg>" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="wrap">
+    <header>
+      <h1>🎱 로또 번호 자동 추천</h1>
+      <p class="sub">1~45 중 6개 번호를 골라 드려요. 고정수·제외수를 지정할 수 있어요.</p>
+    </header>
+
+    <section class="card">
+      <div class="row">
+        <label for="sets">게임 수</label>
+        <select id="sets">
+          <option>1</option><option>2</option><option>3</option><option>4</option><option selected>5</option>
+        </select>
+      </div>
+
+      <details>
+        <summary>고정수 · 제외수 설정</summary>
+        <p class="hint">번호를 한 번 누르면 <b class="tag fixed">고정</b>, 두 번 누르면 <b class="tag excluded">제외</b>, 세 번 누르면 해제돼요. (고정수 최대 5개)</p>
+        <div id="picker" class="picker" aria-label="번호 선택판"></div>
+        <button id="resetPicker" class="ghost" type="button">설정 초기화</button>
+      </details>
+
+      <button id="generate" class="primary" type="button">번호 추천받기</button>
+      <p id="error" class="error" role="alert"></p>
+    </section>
+
+    <section id="results" class="results" aria-live="polite"></section>
+
+    <section class="card" id="historyCard" hidden>
+      <div class="row between">
+        <h2>최근 추천 기록</h2>
+        <button id="clearHistory" class="ghost" type="button">기록 지우기</button>
+      </div>
+      <ol id="history" class="history"></ol>
+    </section>
+
+    <footer>
+      번호는 무작위로 뽑으며 당첨 확률을 높여 주지 않아요. 재미로만 이용해 주세요.
+    </footer>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
